@@ -1,0 +1,49 @@
+.\" $Id$
+.Dd August 24, 2004
+.Dt FUNIQ 1
+.Os
+.Sh NAME
+.Nm funiq
+.Nd report duplicated or unique files
+.Sh SYNOPSIS
+.Nm funiq
+.Op Fl du
+.Ar file ...
+.Sh DESCRIPTION
+The
+.Nm
+utility reports on duplicated or unique files.
+The list of files to compare is given on the command line and,
+under the mode of operation determined by command line options,
+.Nm
+will report on which files are duplicates or unique, or
+.Nm
+will print the largest subset of files that are unique.
+.Pp
+.Nm
+supports the following options:
+.Bl -tag -width indent
+.It Fl d
+Only print out the filenames of files that have duplicate content.
+.It Fl u
+Only print out the filenames of files that have unique content.
+.El
+.Pp
+The default mode of operation is to print out the largest subset of
+unique files.
+.Pp
+.Nm
+will exit zero on success or with one of the error codes from
+.Xr sysexits 3
+on failure.
+.Sh SEE ALSO
+.Xr ksh 1 ,
+.Xr uniq 1 ,
+.Xr xargs 1 ,
+.Xr fnmatch 3 ,
+.Xr sysexits 3
+.Sh BUGS
+There is no way to specify or preserve which particular files should be
+considered original and which duplicates out of a subset of files that
+are the same, but since they are the same, and only the filenames
+differ, this really should not be a problem.
