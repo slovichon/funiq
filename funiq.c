@@ -31,7 +31,8 @@
 static int prdups = 0;
 static int pruniq = 0;
 
-#define TF_DUP (1<<0)
+#define TF_DUP (1<<0)	/* File is a duplicate. */
+#define TF_MEM (1<<1)	/* File is a member of the unique list. */
 
 static __dead void usage(void);
 
@@ -73,19 +74,23 @@ main(int argc, char *argv[])
 	else
 		pact = &acts[1];
 
+	for (i = 0; i < argc; i++)
+		tab[i] |= TF_MEM;
+
 	pact->a_init(argc, argv);
 	for (i = 0; i < argc - 1; i++)
 		for (j = i + 1; j < argc; j++)
 			if (pact->a_eq(i, j, argv)) {
 				tab[i] |= TF_DUP;
 				tab[j] |= TF_DUP;
+				tab[j] &= ~TF_MEM;
 			}
 	pact->a_cleanup();
 
 	if (prdups) {
 		/* Only print duplicates. */
 		for (i = 0; i < argc; i++)
-			if (tab[i])
+			if (tab[i] & TF_DUP)
 				(void)printf("%s", argv[i]);
 	} else if (pruniq) {
 		/* Only print unique files. */
@@ -95,7 +100,7 @@ main(int argc, char *argv[])
 	} else {
 		/* Print a list of unique files. */
 		for (i = 0; i < argc; i++)
-			if (tab[i])
+			if (tab[i] & TF_MEM)
 				(void)printf("%s", argv[i]);
 	}
 	free(tab);
