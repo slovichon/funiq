@@ -1,26 +1,38 @@
 /* $Id$ */
 
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <sys/mman.h>
+
+#include <err.h>
+#include <fcntl.h>
+#include <limits.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <sysexits.h>
+#include <unistd.h>
+
 #include "funiq.h"
 
-static u_int64_t hashfile(char *);
+static u_int64_t hashfile(const char *);
 
 static u_int64_t *hashtab;
 
 void
-hash_init(int n, char **argv)
+hash_init(int n, const char **argv)
 {
-	int i, j;
+	int i;
 
-	if ((hashtab = malloc(n * sizeof(*hashtab))) == NULL)
-		err(EX_OSERR, "malloc");
+	if ((hashtab = calloc(n, sizeof(*hashtab))) == NULL)
+		err(EX_OSERR, "calloc");
 	for (i = 0; i < n; i++)
 		hashtab[i] = hashfile(*argv++);
 }
 
 __inline int
-hash_eq(int a, int b, char **argv)
+hash_eq(int a, int b, const char **argv)
 {
-	return (hashtab[a] == hashtab[b])
+	return (hashtab[a] == hashtab[b]);
 }
 
 void
@@ -30,12 +42,12 @@ hash_cleanup(void)
 }
 
 static u_int64_t
-hashfile(char *s)
+hashfile(const char *s)
 {
+	unsigned char *p;
 	struct stat st;
 	u_int64_t hash;
 	off_t i;
-	void *p;
 	int fd;
 
 	if ((fd = open(s, O_RDONLY)) == NULL)
@@ -46,8 +58,8 @@ hashfile(char *s)
 	     0)) == NULL)
 		err(EX_OSERR, "mmap %s", s);
 	for (hash = 0, i = 0; i < st.st_size; i++)
-		hash = (((hash * UINT_MAX) + p[i]) % UINT64_MAX) ^ hash;
-	(void)munmap(p);
+		hash = (((hash * UINT_MAX) + p[i]) % UQUAD_MAX) ^ hash;
+	(void)munmap(p, st.st_size);
 	(void)close(fd);
 
 	return (hash);
