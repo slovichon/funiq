@@ -21,6 +21,7 @@
  *	2 | 3
  */
 
+#include <err.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <sysexits.h>
@@ -37,13 +38,12 @@ static __dead void usage(void);
 int
 main(int argc, char *argv[])
 {
-	extern int optind;
+	int c, i, j;
+	int *tab;
 	struct act acts[] = {
 		{ hash_init, hash_cleanup, hash_eq },
 		{ mem_init, mem_cleanup, mem_eq }
 	}, *pact;
-	int *tab;
-	int c, i, j;
 
 	while ((c = getopt(argc, argv, "du")) != -1) {
 		switch (c) {
@@ -90,7 +90,7 @@ main(int argc, char *argv[])
 	} else if (pruniq) {
 		/* Only print unique files. */
 		for (i = 0; i < argc; i++)
-			if (tab[i] & TF_DUP == 0)
+			if ((tab[i] & TF_DUP) == 0)
 				(void)printf("%s", argv[i]);
 	} else {
 		/* Print a list of unique files. */
