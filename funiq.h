@@ -5,7 +5,7 @@
 struct act {
 	void (*a_init)(int, const char **);
 	void (*a_cleanup)(void);
-	int (*a_eq)(int, int, const char **);
+	int  (*a_eq)(int, int, const char **);
 };
 
 void hash_init(int, const char **);
