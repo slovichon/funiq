@@ -13,7 +13,7 @@
 #include "funiq.h"
 
 void
-mem_init(int argc, const char **argv)
+mem_init(int argc, char **argv)
 {
 }
 
@@ -23,10 +23,10 @@ mem_cleanup(void)
 }
 
 int
-mem_eq(int a, int b, const char **argv)
+mem_eq(int a, int b, char **argv)
 {
 	struct stat sta, stb;
-	const char *fna, *fnb;
+	char *fna, *fnb;
 	void *pa, *pb;
 	int fda, fdb;
 	off_t siz;

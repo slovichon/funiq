@@ -14,12 +14,12 @@
 
 #include "funiq.h"
 
-static u_int64_t hashfile(const char *);
+static u_int64_t hashfile(char *);
 
 static u_int64_t *hashtab;
 
 void
-hash_init(int n, const char **argv)
+hash_init(int n, char **argv)
 {
 	int i;
 
@@ -30,7 +30,7 @@ hash_init(int n, const char **argv)
 }
 
 __inline int
-hash_eq(int a, int b, const char **argv)
+hash_eq(int a, int b, char **argv)
 {
 	return (hashtab[a] == hashtab[b]);
 }
@@ -42,7 +42,7 @@ hash_cleanup(void)
 }
 
 static u_int64_t
-hashfile(const char *s)
+hashfile(char *s)
 {
 	unsigned char *p;
 	struct stat st;
