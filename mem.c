@@ -1,11 +1,19 @@
 /* $Id$ */
 
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <sys/mman.h>
+
+#include <err.h>
+#include <fcntl.h>
+#include <string.h>
 #include <sysexits.h>
+#include <unistd.h>
 
 #include "funiq.h"
 
 void
-mem_init(int argc, char **argv)
+mem_init(int argc, const char **argv)
 {
 }
 
@@ -18,9 +26,9 @@ int
 mem_eq(int a, int b, const char **argv)
 {
 	struct stat sta, stb;
-	char *fna, *fnb;
+	const char *fna, *fnb;
 	void *pa, *pb;
-	int fda, *fdb;
+	int fda, fdb;
 	off_t siz;
 	int same;
 
@@ -52,8 +60,8 @@ mem_eq(int a, int b, const char **argv)
 
 	same = memcmp(pa, pb, siz);
 
-	(void)munmap(pa);
-	(void)munmap(pb);
+	(void)munmap(pa, siz);
+	(void)munmap(pb, siz);
 	(void)close(fda);
 	(void)close(fdb);
 
